@@ -119,8 +119,13 @@ class ExpensesController extends Controller
      */
     public function destroy($id)
     {
-        $expense = Expense::find($id)->first();
-        $expense->delete();
+        $expense = Expense::find($id);
+        if($expense){
+            if($expense->delete()){
+                return response()->json(['success'=> 'Data deleted successfully'], 200);
+            }
+        }else{
+            return response()->json(['error'=>'Data is no longer available'], 410);
+        }
     }
-
 }

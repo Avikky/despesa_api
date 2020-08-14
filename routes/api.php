@@ -35,11 +35,11 @@ Route::group(['middleware' => 'api','prefix' => 'expenses'], function ($router) 
 });
 
 Route::group(['middleware' => 'api','prefix' => 'expense-category'], function ($router) {
-    Route::get('all', 'ExpenseCategoryController@index');
-    Route::get('single/{id}', 'ExpenseCategoryController@show');
-    Route::post('store', 'ExpenseCategoryController@store');
-    Route::put('update/{id}', 'ExpenseCategoryController@update');
-    Route::delete('delete/{id}', 'ExpenseCategoryController@destroy');
+    Route::get('all', 'API\ExpenseCategoryController@index');
+    Route::get('single/{id}', 'API\ExpenseCategoryController@show');
+    Route::post('store', 'API\ExpenseCategoryController@store');
+    Route::put('update/{id}', 'API\ExpenseCategoryController@update');
+    Route::delete('delete/{id}', 'API\ExpenseCategoryController@destroy');
 });
 
 Route::group(['middleware' => 'api','prefix' => 'income'], function ($router) {

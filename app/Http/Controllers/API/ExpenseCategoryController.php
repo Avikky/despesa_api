@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ExpenseCategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +23,10 @@ class ExpenseCategoryController extends Controller
      */
     public function index()
     {
-        $exCategory = ExpenseCategory::all()->latest();
+        $exCategory = ExpenseCategory::all();
+        if(count($exCategory) ==  0){
+            return response()->json(['message'=>'No Data Found'], 404);
+        }
         return ExpenseCategoryResources::collection($exCategory);
     }
 
@@ -53,7 +61,7 @@ class ExpenseCategoryController extends Controller
     public function show($id)
     {
         $exCategory = ExpenseCategory::find($id)->first();
-        return new ExpenseCategoryResources($exCategory);
+        return (new ExpenseCategoryResources($exCategory))->additional(['status' => ['success' => 200]]);
     }
 
     /**
@@ -88,7 +96,14 @@ class ExpenseCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $expense = ExpenseCategory::find($id)->first();
-        $expense->delete();
+        $expense = ExpenseCategory::find($id);
+      if($expense){
+            if($expense->delete()){
+            return response()->json(['success'=> 'Data deleted successfully'], 200);
+            }
+        }else{
+            return response()->json(['error'=>'Data is no longer available'], 410);
+        }
+
     }
 }
