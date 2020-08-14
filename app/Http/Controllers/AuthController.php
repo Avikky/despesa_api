@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -15,7 +19,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
      /**
@@ -25,6 +29,35 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+      public function register(Request $request){
+
+       $validateData = Validator::make($request->all(), [
+            'name' => 'required|string|max:191',
+            'email' => 'required|string|max:191|email|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'sometimes|integer',
+            'gender' => 'required|string|',
+            'phone' => 'required|string',
+
+        ]);
+
+        if ($validateData->fails()) {
+            return response()->json(['errors'=>$validateData->errors()], 422);
+        }
+        $roleData = $request->has('role') ? $request->role : 3;
+        $createUser =  User::create([
+        'name' => $request['name'],
+        'email' => $request['email'],
+        'password' => Hash::make($request['password']),
+        'role' => $roleData,
+        'gender' => $request['gender'],
+        'phone' => $request['phone']
+        ]);
+
+        return response()->json(['user'=> $createUser, 'message' => 'User created successfully'], 200);
+    }
+
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -80,7 +113,7 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60
         ]);
     }
-    
+
     /**
      * Get the guard to be used during authentication.
      *
@@ -90,5 +123,5 @@ class AuthController extends Controller
     {
         return Auth::guard();
     }
-    
+
 }
