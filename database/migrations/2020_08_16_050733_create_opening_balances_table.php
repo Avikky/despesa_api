@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCustomersTable extends Migration
+class CreateOpeningBalancesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('opening_balances', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->mediumText('about')->nullable();
-            $table->softDeletes('deleted_at', 0);
+            $table->integer('amount')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('opening_balances');
     }
 }

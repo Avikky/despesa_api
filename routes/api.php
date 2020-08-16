@@ -43,11 +43,29 @@ Route::group(['middleware' => 'api','prefix' => 'expense-category'], function ($
 });
 
 Route::group(['middleware' => 'api','prefix' => 'income'], function ($router) {
-    Route::get('all', 'IncomeController@index');
-    Route::get('single/{id}', 'IncomeController@show');
-    Route::post('store', 'IncomeController@store');
-    Route::put('update/{id}', 'IncomeController@update');
-    Route::delete('delete/{id}', 'IncomeController@destroy');
+    Route::get('all', 'API\IncomeController@index');
+    Route::get('single/{id}', 'API\IncomeController@show');
+    Route::post('store', 'API\IncomeController@store');
+    Route::put('update/{id}', 'API\IncomeController@update');
+    Route::delete('delete/{id}', 'API\IncomeController@destroy');
+});
+
+Route::group(['middleware' => 'api','prefix' => 'customer'], function ($router) {
+    Route::get('all', 'API\CustomerController@index');
+    Route::get('single/{id}', 'API\CustomerController@show');
+    Route::post('store', 'API\CustomerController@store');
+    Route::put('update/{id}', 'API\CustomerController@update');
+    Route::delete('delete/{id}', 'API\CustomerController@destroy');
+});
+
+Route::group(['middleware' => 'api','prefix' => 'settings'], function ($router) {
+    Route::put('reset-password', 'API\SettingsController@changePassword');
+    Route::put('update-profile', 'API\SettingsController@updateProfile');
+});
+
+Route::group(['middleware' => 'api','prefix' => 'opening-balance'], function ($router) {
+    Route::post('add', 'API\BalanceController@addOpeninBalance');
+    Route::put('edit', 'API\BalanceController@editOpeningBalance');
 });
 
 
