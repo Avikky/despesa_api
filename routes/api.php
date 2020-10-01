@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,6 +25,7 @@ Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
     Route::post('register', 'AuthController@register');
 });
 
+
 Route::group(['middleware' => 'api','prefix' => 'expenses'], function ($router) {
     Route::get('all', 'API\ExpensesController@index');
     Route::get('single/{id}', 'API\ExpensesController@show');
@@ -39,7 +39,7 @@ Route::group(['middleware' => 'api','prefix' => 'expense-category'], function ($
     Route::get('single/{id}', 'API\ExpenseCategoryController@show');
     Route::post('store', 'API\ExpenseCategoryController@store');
     Route::put('update/{id}', 'API\ExpenseCategoryController@update');
-    Route::delete('delete/{id}', 'API\ExpenseCategoryController@destroy');
+    Route::delete('delete/{id}/', 'API\ExpenseCategoryController@destroy');
 });
 
 Route::group(['middleware' => 'api','prefix' => 'income'], function ($router) {
@@ -65,7 +65,12 @@ Route::group(['middleware' => 'api','prefix' => 'settings'], function ($router) 
 
 Route::group(['middleware' => 'api','prefix' => 'opening-balance'], function ($router) {
     Route::post('add', 'API\BalanceController@addOpeninBalance');
-    Route::put('edit', 'API\BalanceController@editOpeningBalance');
+    Route::get('current', 'API\BalanceController@getCurrentOpeningBal');
+    Route::get('last', 'API\BalanceController@getLastOpeningBal');
+    Route::get('general', 'API\BalanceController@getGeneralOpeningBal');
+    Route::put('edit/{id}', 'API\BalanceController@editOpeningBalance');
+    Route::put('edit/{id}', 'API\BalanceController@editOpeningBalance');
+    Route::delete('delete/{id}', 'API\BalanceController@destroy');
 });
 
 

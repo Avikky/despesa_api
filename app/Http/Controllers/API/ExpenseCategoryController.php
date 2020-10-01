@@ -26,7 +26,7 @@ class ExpenseCategoryController extends Controller
     {
         $exCategory = ExpenseCategory::all();
         if(count($exCategory) ==  0){
-            return response()->json(['message'=>'No Data Found'], 404);
+            return response()->json(['message'=>'No Data Found', 'status' => 404]);
         }
         return ExpenseCategoryResources::collection($exCategory);
     }
@@ -52,6 +52,7 @@ class ExpenseCategoryController extends Controller
         }
 
     }
+
 
     /**
      * Display the specified resource.

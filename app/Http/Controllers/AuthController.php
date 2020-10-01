@@ -60,13 +60,22 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+          $validateData = Validator::make($request->all(), [
+            'email' => 'required|string',
+            'password' => 'required|string|min:8'
+        ]);
+
+          if ($validateData->fails()) {
+            return response()->json(['errors'=>$validateData->errors(), 'status'=>422]);
+        }
+
         $credentials = $request->only('email', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
             return $this->respondWithToken($token);
         }
 
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['error' => 'Unauthenticated', 'status' => 401]);
     }
 
     public function me()
@@ -107,10 +116,14 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $user = $this->guard()->user();
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
+            'user_role' => $user->role,
+            'username' =>$user->name,
+            'email' =>$user->email,
+            'expires_in' => $this->guard()->factory()->getTTL() * 120
         ]);
     }
 

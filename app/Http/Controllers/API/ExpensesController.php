@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Expense;
+use App\OpeningBalance;
 use DB;
 use App\Http\Resources\ExpenseResources;
 use Illuminate\Support\Facades\Validator;
@@ -47,6 +48,8 @@ class ExpensesController extends Controller
             'description' => 'required|string',
             'made_by' => 'required|string',
             'amount' => 'required|integer',
+            'opening_bal_id' => 'required|integer',
+            'date_of_expense' => 'required|date',
         ]);
 
         if($validator->fails()){
@@ -59,6 +62,8 @@ class ExpensesController extends Controller
         $expenses->description = $request->input('description');
         $expenses->made_by = $request->input('made_by');
         $expenses->amount = $request->input('amount');
+        $expenses->opening_bal_id = $request->input('opening_bal_id');
+        $expenses->date_of_expense = $request->input('date_of_expense');
 
         if($expenses->save()){
             return new ExpenseResources($expenses);
@@ -117,15 +122,24 @@ class ExpensesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+
         $expense = Expense::find($id);
+        $openingBal  =  OpeningBalance::find($request->balId);
+        $newBal;
+        if($openingBal){
+            $newBal = $openingBal->amount + $request->amount;
+        }
+        $openingBal->amount = $newBal;
+        $openingBal->save();
         if($expense){
             if($expense->delete()){
-                return response()->json(['success'=> 'Data deleted successfully'], 200);
+                return response()->json(['success'=> 'Data deleted successfully', 'newBal'=>$openingBal->amount], 200);
             }
         }else{
             return response()->json(['error'=>'Data is no longer available'], 410);
         }
+
     }
 }

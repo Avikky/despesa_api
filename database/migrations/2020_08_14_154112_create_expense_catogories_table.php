@@ -13,7 +13,7 @@ class CreateExpenseCatogoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('expense_catogories', function (Blueprint $table) {
+        Schema::create('expense_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateExpenseCatogoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('expense_catogories');
+        Schema::dropIfExists('expense_categories');
     }
 }

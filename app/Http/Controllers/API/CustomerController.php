@@ -24,7 +24,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customer = Customer::all();
+        $customer = Customer::latest()->get();
 
         if(count($customer) ==  0){
             return response()->json(['message'=>'No Data Found'], 404);
@@ -43,7 +43,11 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|unique:customers,name',
-            'about' => 'nullable|string',
+            'category' => 'required|string',
+            'service_provided' => 'required|string',
+            'payment_interval' => 'required|string',
+            'current_billing_date' => 'sometimes|required|date',
+            'payment_status' => 'nullable|string',
         ]);
 
         if($validator->fails()){
@@ -52,7 +56,11 @@ class CustomerController extends Controller
 
         $customer = new Customer;
         $customer->name = $request->input('name');
-        $customer->about = $request->input('about');
+        $customer->category = $request->input('category');
+        $customer->service_provided = $request->input('service_provided');
+        $customer->payment_interval = $request->input('payment_interval');
+        $customer->current_billing_date = $request->input('current_billing_date');
+        $customer->payment_status = $request->input('payment_status');
 
         if($customer->save()){
             return (new CustomerResources($customer))->additional(['status' => ['success' => 200]]);
@@ -75,6 +83,7 @@ class CustomerController extends Controller
         }else {
             return response()->json(['error' => 'No data found'], 404);
         }
+
     }
 
     /**
@@ -89,15 +98,26 @@ class CustomerController extends Controller
         $customer = Customer::find($id);
 
         $validator = Validator::make($request->all(), [
-            'name' => ['required','string',Rule::unique('customers')->ignore($id)],
-            'about' => 'nullable|string',
+            'name' => 'required|string|unique:customers,name,'.$id,
+            'category' => 'required|string',
+            'service_provided' => 'required|string',
+            'payment_interval' => 'required|string',
+            'current_billing_date' => 'sometimes|required|date',
+            'payment_status' => 'nullable|string',
         ]);
 
         if($validator->fails()){
             return response()->json(['errors'=> $validator->errors()], 422);
         }
 
-        if($customer->update($request->all())){
+        $customer->name = $request->input('name');
+        $customer->category = $request->input('category');
+        $customer->service_provided = $request->input('service_provided');
+        $customer->payment_interval = $request->input('payment_interval');
+        $customer->current_billing_date = $request->input('current_billing_date');
+
+
+        if($customer->save()){
             return (new CustomerResources($customer))->additional(['status' => ['success' => 200]]);
         }else{
             return response()->json(['error' => 'Opps Something went wrong'], 500);
