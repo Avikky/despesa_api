@@ -23,10 +23,10 @@ class IncomeController extends Controller
      */
     public function index()
     {
-        $income = Income::all();
-
+        $income = Income::where('deleted_at', NULL)->latest()->paginate(10);
+        
         if(count($income) ==  0){
-            return response()->json(['message'=>'No Data Found'], 404);
+            return response()->json(['message'=>'No Data Found', 'status'=>404], 404);
         }
 
         return IncomeResources::collection($income)->additional(['status' => ['success' => 200]]);
@@ -43,19 +43,19 @@ class IncomeController extends Controller
         $income = new Income;
         $validator = Validator::make($request->all(), [
             'source' => 'required|string',
-            'type' => 'required|string',
             'description' => 'required|string',
             'mop' => 'required|string',
             'amount' => 'required|integer',
-            'customer_id' => 'required|integer',
+            'vat_percentage' => 'required|string',
+            'date_received' => 'required|date',
         ]);
 
         if($validator->fails()){
-            return response()->json(['errors'=> $validator->errors()], 422);
+            return response()->json(['errors'=> $validator->errors(), 'status' => 422], 422);
         }
 
         if($income->create($request->all())){
-            return response()->json(['message' => 'Income Created successfully'], 200);
+            return response()->json(['message' => 'Income Created successfully', 'status' => 200], 200);
 
         }else{
             return response()->json(['error' => 'Opps Something went wrong'], 500);
@@ -89,13 +89,13 @@ class IncomeController extends Controller
     public function update(Request $request, $id)
     {
         $income = Income::find($id);
-        $validator = Validator::make($request->all(), [
+       $validator = Validator::make($request->all(), [
             'source' => 'required|string',
-            'type' => 'required|string',
             'description' => 'required|string',
             'mop' => 'required|string',
             'amount' => 'required|integer',
-            'customer_id' => 'required|integer',
+            'vat_percentage' => 'required|string',
+            'date_received' => 'required|date',
         ]);
 
         if($validator->fails()){

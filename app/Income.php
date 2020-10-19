@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Income extends Model
 {
-    protected $fillable = ['source', 'customer_id', 'type', 'description', 'mop', 'amount'];
+    protected $fillable = ['source',  'vat_percentage', 'description', 'mop', 'amount', 'date_received'];
 }

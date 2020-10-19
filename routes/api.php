@@ -73,6 +73,11 @@ Route::group(['middleware' => 'api','prefix' => 'opening-balance'], function ($r
     Route::delete('delete/{id}', 'API\BalanceController@destroy');
 });
 
+Route::group(['middleware' => 'api','prefix' => 'report'], function ($router) {
+    Route::get('all', 'API\ReportController@index');
+    Route::post('generate', 'API\ReportController@generateReport');
+ 
+});
 
 
 
