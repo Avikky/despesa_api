@@ -31,6 +31,7 @@ class SettingsController extends Controller
             'name' => 'required|string|max:191',
             'email' => ['sometimes','required','email',Rule::unique('users')->ignore($user->id)],
             'phone' => 'sometimes|required|string',
+
         ]);
 
         if($user->update($request->all())){
@@ -51,15 +52,13 @@ class SettingsController extends Controller
     {
         $user = auth()->user();
         $validateData = Validator::make($request->all(), [
-            'oldpassword' => 'required|password:api',
             'newpassword' => 'required|string',
-            'newpassword_confirmation' => 'required|string',
         ]);
 
         $user->password = Hash::make($request->input('newpassword'));
 
         if($user->save()){
-            return response()->json(['success' => 'Password Reset Successful'], 200);
+            return response()->json(['success' => 'Password Reset Successful', 'status'=> 200], 200);
         }else{
             return response()->json(['error' => 'Opps something went wrong'], 500);
 

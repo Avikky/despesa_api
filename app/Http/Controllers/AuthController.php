@@ -72,10 +72,13 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
+
             return $this->respondWithToken($token);
+        }else {
+            return response()->json(['error' => 'Unauthorized', 'status' => 401]);
         }
 
-        return response()->json(['error' => 'Unauthenticated', 'status' => 401]);
+
     }
 
     public function me()
@@ -91,9 +94,9 @@ class AuthController extends Controller
 
     public function logout()
     {
+        auth()->invalidate();
         $this->guard()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Successfully logged out', 'status'=>200]);
     }
 
     /**
@@ -104,7 +107,8 @@ class AuthController extends Controller
 
      public function refresh()
     {
-        return $this->respondWithToken($this->guard()->refresh());
+        $newToken = auth()->refresh(true, true);
+        return $this->respondWithToken($newToken);
     }
 
     /**
@@ -121,12 +125,13 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'user_role' => $user->role,
-            'username' =>$user->name,
-            'email' =>$user->email,
-            'expires_in' => $this->guard()->factory()->getTTL() * 120
+            'username' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'id' => $user->id,
+            'expires_in' => $this->guard()->factory()->getTTL() * 60
         ]);
     }
-
     /**
      * Get the guard to be used during authentication.
      *

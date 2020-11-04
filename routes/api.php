@@ -29,6 +29,7 @@ Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
 Route::group(['middleware' => 'api','prefix' => 'expenses'], function ($router) {
     Route::get('all', 'API\ExpensesController@index');
     Route::get('single/{id}', 'API\ExpensesController@show');
+    Route::post('search', 'API\ExpensesController@searchExpense');
     Route::post('store', 'API\ExpensesController@store');
     Route::put('update/{id}', 'API\ExpensesController@update');
     Route::delete('delete/{id}', 'API\ExpensesController@destroy');
@@ -69,14 +70,16 @@ Route::group(['middleware' => 'api','prefix' => 'opening-balance'], function ($r
     Route::get('last', 'API\BalanceController@getLastOpeningBal');
     Route::get('general', 'API\BalanceController@getGeneralOpeningBal');
     Route::put('edit/{id}', 'API\BalanceController@editOpeningBalance');
-    Route::put('edit/{id}', 'API\BalanceController@editOpeningBalance');
+    Route::put('reuse-bal/{id}', 'API\BalanceController@reusingOpeningBalance');
+
     Route::delete('delete/{id}', 'API\BalanceController@destroy');
 });
+
 
 Route::group(['middleware' => 'api','prefix' => 'report'], function ($router) {
     Route::get('all', 'API\ReportController@index');
     Route::post('generate', 'API\ReportController@generateReport');
- 
+    Route::post('generate', 'API\ReportController@generateReport');
 });
 
 

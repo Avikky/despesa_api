@@ -37,6 +37,17 @@ class ExpensesController extends Controller
         return ExpenseResources::collection($expenses);
     }
 
+    public function searchExpense(Request $request){
+        $searchResult = Expense::where('deleted_at', Null)->where('title','LIKE', '%'.$request->searchdata.'%')->orWhere('date_of_expense','LIKE', '%'.$request->searchdata.'%')->orWhere('description', 'LIKE', '%'.$request->searchdata. '%')->get();
+
+        if(count($searchResult) > 0){
+            return response()->json(['data'=> $searchResult, 'status'=> 200]);
+        }else{
+            return response()->json(['message'=> 'No record found', 'status'=>404]);
+        }
+
+    }
+
     /**
      * Show the form for creating a new resource.
      *
