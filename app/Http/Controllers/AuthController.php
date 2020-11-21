@@ -19,7 +19,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
      /**
@@ -31,7 +31,7 @@ class AuthController extends Controller
      */
       public function register(Request $request){
 
-        $validateData = Validator::make($request->all(), [
+       $validateData = Validator::make($request->all(), [
             'name' => 'required|string|max:191',
             'email' => 'required|string|max:191|email|unique:users',
             'password' => 'required|string|min:8',
@@ -65,7 +65,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8'
         ]);
 
-          if ($validateData->fails()) {
+        if ($validateData->fails()) {
             return response()->json(['errors'=>$validateData->errors(), 'status'=>422]);
         }
 

@@ -40,13 +40,15 @@ class ExpenseCategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'description' => 'string|nullable'
         ]);
         if($validator->fails()){
             return response()->json(['errors'=> $validator->errors()], 422);
         }
         $exCategory = new ExpenseCategory;
         $exCategory->name = $request->input('name');
+        $exCategory->description = $request->input('description');
         if($exCategory->save()){
             return new ExpenseCategoryResources($exCategory);
         }
@@ -76,7 +78,8 @@ class ExpenseCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'description' => 'string'
         ]);
 
         if($validator->fails()){
@@ -85,6 +88,7 @@ class ExpenseCategoryController extends Controller
         $exCategory = ExpenseCategory::find($id)->first();
 
         $exCategory->name = $request->name;
+        $exCategory->description = $request->description;
         if($exCategory->save()){
             return new ExpenseCategoryResources($exCategory);
         }
