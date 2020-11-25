@@ -25,10 +25,12 @@ class ExpenseCategoryController extends Controller
     public function index()
     {
         $exCategory = ExpenseCategory::all();
-        if(count($exCategory) ==  0){
-            return response()->json(['message'=>'No Data Found', 'status' => 404]);
+        if($exCategory){
+            return ExpenseCategoryResources::collection($exCategory);
+        }else {
+            return response()->json('No Data Found', 404);
         }
-        return ExpenseCategoryResources::collection($exCategory);
+        
     }
 
     /**

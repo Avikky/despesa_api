@@ -17,7 +17,12 @@ class BalanceController extends Controller
 
     public function getLastOpeningBal(){
         $openingBal = OpeningBalance::latest()->first();
-        return $openingBal;
+        if($openingBal){
+            return $openingBal;
+        }else {
+            return response()->json('No opening balance found', 404);
+        }
+
     }
 
     public function getCurrentOpeningBal(){

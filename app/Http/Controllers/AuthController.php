@@ -129,7 +129,7 @@ class AuthController extends Controller
             'email' => $user->email,
             'phone' => $user->phone,
             'id' => $user->id,
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
+            'expires_in' => $this->guard()->factory()->getTTL() * 150
         ]);
     }
     /**

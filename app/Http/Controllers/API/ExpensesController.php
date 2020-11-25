@@ -26,12 +26,16 @@ class ExpensesController extends Controller
     public function index()
     {
         $openingBal = OpeningBalance::latest()->first();
-        $expenses = Expense::where('deleted_at', NULL)
-        ->where('opening_bal_id', $openingBal->id)
-        ->latest()->paginate(15);
+        if($openingBal){
+            $expenses = Expense::where('deleted_at', NULL)
+            ->where('opening_bal_id', $openingBal->id)
+            ->latest()->paginate(15);
 
-        if(count($expenses) ==  0){
-            return response()->json(['message'=>'No Data Found'], 404);
+            if(count($expenses) ==  0){
+                return response()->json(['message'=>'No Data Found'], 404);
+            }
+        }else{
+            return response()->json('opening balance is not available', 404);
         }
 
         return ExpenseResources::collection($expenses);
