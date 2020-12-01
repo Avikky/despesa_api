@@ -54,7 +54,7 @@ class AuthController extends Controller
         'phone' => $request['phone']
         ]);
 
-        return response()->json(['user'=> $createUser, 'message' => 'User created successfully'], 200);
+        return response()->json($createUser, 200);
     }
 
 
@@ -66,7 +66,7 @@ class AuthController extends Controller
         ]);
 
         if ($validateData->fails()) {
-            return response()->json(['errors'=>$validateData->errors(), 'status'=>422]);
+            return response()->json($validateData->errors(), 422);
         }
 
         $credentials = $request->only('email', 'password');
@@ -75,7 +75,7 @@ class AuthController extends Controller
 
             return $this->respondWithToken($token);
         }else {
-            return response()->json(['error' => 'Unauthorized', 'status' => 401]);
+            return response()->json('Unauthorized',401);
         }
 
 
@@ -96,7 +96,7 @@ class AuthController extends Controller
     {
         auth()->invalidate();
         $this->guard()->logout();
-        return response()->json(['message' => 'Successfully logged out', 'status'=>200]);
+        return response()->json('Successfully logged out', 200);
     }
 
     /**
@@ -129,7 +129,7 @@ class AuthController extends Controller
             'email' => $user->email,
             'phone' => $user->phone,
             'id' => $user->id,
-            'expires_in' => $this->guard()->factory()->getTTL() * 150
+            'expires_in' => $this->guard()->factory()->getTTL() * 60
         ]);
     }
     /**
