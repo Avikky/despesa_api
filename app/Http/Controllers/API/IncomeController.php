@@ -46,7 +46,7 @@ class IncomeController extends Controller
             'source' => 'required|string',
             'description' => 'required|string',
             'mop' => 'required|string',
-            'amount' => 'required|integer',
+            'amount' => 'required|numeric',
             'vat_percentage' => 'required|string',
             'date_received' => 'required|date',
         ]);
