@@ -65,7 +65,7 @@ class ExpensesController extends Controller
             'title' => 'required|string',
             'description' => 'required|string',
             'made_by' => 'required|string',
-            'amount' => 'required|integer',
+            'amount' => 'required|numeric',
             'opening_bal_id' => 'required|integer',
             'date_of_expense' => 'required|date',
         ]);
@@ -115,7 +115,7 @@ class ExpensesController extends Controller
             'title' => 'required|string',
             'description' => 'required|string',
             'made_by' => 'required|string',
-            'amount' => 'required|integer',
+            'amount' => 'required|numeric',
         ]);
 
         if($validator->fails()){

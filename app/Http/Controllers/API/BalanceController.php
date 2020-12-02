@@ -37,7 +37,7 @@ class BalanceController extends Controller
         //$checkBal = DB::table('opening_balances')->count();
         $openingBal = new OpeningBalance;
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|integer',
+            'amount' => 'required|numeric',
             'date_created' => 'required|date|unique:opening_balances,date_created',
         ]);
 
@@ -59,7 +59,7 @@ class BalanceController extends Controller
         $openingBal = OpeningBalance::find($id);
 
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|integer',
+            'amount' => 'required|numeric',
         ]);
         if($validator->fails()){
             return response()->json(['errors'=> $validator->errors()], 422);
@@ -76,7 +76,7 @@ class BalanceController extends Controller
         $openingBal = OpeningBalance::find($id);
 
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|integer',
+            'amount' => 'required|numeric',
             'date_created' => 'sometimes|required|date|unique:opening_balances,date_created,'.$id
         ]);
         if($validator->fails()){
