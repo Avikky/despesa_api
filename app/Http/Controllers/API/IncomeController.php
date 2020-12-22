@@ -24,13 +24,25 @@ class IncomeController extends Controller
     public function index()
     {
         $income = Income::where('deleted_at', NULL)->latest()->paginate(10);
-        
+
         if($income){
             return IncomeResources::collection($income);
         }else {
             return response()->json('No Data Found', 404);
         }
-      
+
+    }
+
+
+    public function searchIncome(Request $request){
+        $searchResult = Income::where('deleted_at', Null)->where('source','LIKE', '%'.$request->searchdata.'%')->orWhere('mop','LIKE', '%'.$request->searchdata.'%')->orWhere('date_received', 'LIKE', '%'.$request->searchdata. '%')->get();
+
+        if(count($searchResult) > 0){
+            return response()->json(['data'=> $searchResult, 'status'=> 200]);
+        }else{
+            return response()->json(['message'=> 'No record found', 'status'=>404]);
+        }
+
     }
 
     /**

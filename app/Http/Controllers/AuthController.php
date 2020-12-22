@@ -38,7 +38,6 @@ class AuthController extends Controller
             'role' => 'sometimes|integer',
             'gender' => 'required|string|',
             'phone' => 'required|string',
-
         ]);
 
         if ($validateData->fails()) {
@@ -46,12 +45,12 @@ class AuthController extends Controller
         }
         $roleData = $request->has('role') ? $request->role : 3;
         $createUser =  User::create([
-        'name' => $request['name'],
-        'email' => $request['email'],
-        'password' => Hash::make($request['password']),
-        'role' => $roleData,
-        'gender' => $request['gender'],
-        'phone' => $request['phone']
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+            'role' => $roleData,
+            'gender' => $request['gender'],
+            'phone' => $request['phone']
         ]);
 
         return response()->json($createUser, 200);
@@ -75,7 +74,7 @@ class AuthController extends Controller
 
             return $this->respondWithToken($token);
         }else {
-            return response()->json('Unauthorized',401);
+            return response()->json('Unauthorized', 401);
         }
 
 

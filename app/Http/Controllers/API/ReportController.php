@@ -28,34 +28,39 @@ class ReportController extends Controller
     {
         $totalExpenses = Expense::where('deleted_at', Null)->pluck('amount')->sum();
         $totalIncome = Income::where('deleted_at', Null)->pluck('amount')->sum();
-        $grosProfit = $totalExpenses - $totalIncome;
-    
-        return response()->json(['totalExpenses'=>$totalExpenses, 'totalIncome'=>$totalIncome, 'grossProfit'=>$grosProfit, 'status'=> 200], 200);
+        $grosProfit = $totalIncome - $totalExpenses;
 
+        if($grosProfit <= 0){
+            $grosProfit =  0;
+            return response()->json(['totalExpenses'=>number_format($totalExpenses, 2), 'totalIncome'=> number_format($totalIncome, 2), 'grossProfit'=> number_format($grosProfit, 2)], 200);
+        }
     }
 
     public function generateReport(Request $request){
+        if($request->expenseCateID || $request->customerName){
+            $expenseData = Expense::where('deleted_at', Null)->where('category_id',$request->expenseCateID)->whereBetween('date_of_expense', [$request->sortFrom, $request->sortTo])->get();
 
-        $expenseData = Expense::where('deleted_at', Null)->whereBetween('date_of_expense', [$request->sortFrom, $request->sortTo])->get();
-        
-        $openingBal = OpeningBalance::whereBetween('date_created', [$request->sortFrom, $request->sortTo])
-        ->get();
+            $incomeData = Income::where('deleted_at', Null)->where('source', $request->customerName)
+            ->whereBetween('date_received', [$request->sortFrom, $request->sortTo])
+            ->get();
 
-        $incomeData = Income::where('deleted_at', Null)
-        ->whereBetween('date_received', [$request->sortFrom, $request->sortTo])
-        ->get();
-         $params = Expense::where('deleted_at', Null)->whereBetween('date_of_expense', [$request->sortFrom, $request->sortTo])->join('opening_balances', 'expenses.opening_bal_id', '=', 'opening_balances.id')->get();
+             $openingBal = OpeningBalance::whereBetween('date_created', [$request->sortFrom, $request->sortTo])
+            ->get();
 
-        if($expenseData && $incomeData){
-              return response()->json([
-                'expenseData'=>$expenseData,
-                'incomeData'=>$incomeData,
-                'openingBal' => $openingBal,
-                'status'=>200]);
-        }else{
-            return response()->json(['message'=>'problem getting data', 'status'=>500]);
-        }  
-        
+              if($expenseData){
+                return response()->json(
+                    [
+                        'expenseData'=>$expenseData,
+                        'totalSearchExp' => $expenseData->sum('amount'),
+                        'totalSearchIncome' => $incomeData->sum('amount'),
+                        'incomeData'=>$incomeData,
+                        'openingBal' => $openingBal,
+                    ], 200);
+                }else{
+                    return response()->json(['message'=>'problem getting data', 'status'=>500]);
+                }
+        }
+
     }
 
     public function reportWithBalance(Request $request){

@@ -24,10 +24,10 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customer = Customer::latest()->get();
+        $customer = Customer::latest()->paginate(10);
 
         if(count($customer) ==  0){
-            return response()->json(['message'=>'No Data Found'], 404);
+            return response()->json('No Data Found', 404);
         }
 
         return CustomerResources::collection($customer)->additional(['status' => ['success' => 200]]);

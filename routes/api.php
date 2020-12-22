@@ -53,6 +53,7 @@ Route::group(['middleware' => 'api','prefix' => 'income'], function ($router) {
     Route::get('all', 'API\IncomeController@index');
     Route::get('single/{id}', 'API\IncomeController@show');
     Route::post('store', 'API\IncomeController@store');
+     Route::post('search', 'API\IncomeController@searchIncome');
     Route::put('update/{id}', 'API\IncomeController@update');
     Route::delete('delete/{id}', 'API\IncomeController@destroy');
 });
@@ -80,6 +81,7 @@ Route::group(['middleware' => 'api','prefix' => 'opening-balance'], function ($r
 
     Route::delete('delete/{id}', 'API\BalanceController@destroy');
 });
+
 
 
 Route::group(['middleware' => 'api','prefix' => 'report'], function ($router) {
